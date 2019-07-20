@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1>testing</h1>
     <Start @startChat="startChat" v-if="!chatting"/>
     <SimpleChat v-if="chatting" :name="username" />
   </div>
@@ -17,8 +18,9 @@ export default {
   },
   data() {
     return {
-      chatting: false,
-      username: ""
+      chatting: true,
+      username: "",
+      // test: ["a", "b", "c"]
     }
   },
   methods: {
@@ -31,4 +33,11 @@ export default {
 </script>
 
 <style>
+/* #app {
+  height: 500px;
+  background: yellow;
+  display: flex;
+  flex-direction: column-reverse;
+  align-content: flex-end;
+} */
 </style>

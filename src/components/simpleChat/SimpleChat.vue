@@ -1,12 +1,11 @@
 <template>
     <div class="wrap">
-        <ChatBody :msg="text" @clearMsg="clearMessageToBody"/>
-        <ChatInput @submitMessage="addMessageToBody"/>
+        <ChatBody class="chatBody" :msg="text" @clearMsg="clearMessageToBody"/>
+        <ChatInput class="chatInput" @submitMessage="addMessageToBody"/>
     </div>
 </template>
 
 <script>
-import Start from './Start.vue';
 import ChatInput from './ChatInput.vue';
 import ChatBody from './ChatBody.vue';
 
@@ -14,7 +13,6 @@ export default {
     name: 'SimpleChat',
     props: ["name"],
     components: {
-        Start,
         ChatInput,
         ChatBody
     },
@@ -56,7 +54,19 @@ export default {
 
 .wrap {
     margin-top: 3em;
-    /* height: 100%; */
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    height: 100vh;
+}
+
+.chatBody {
+    height: 87vh;
+}
+
+.chatInput {
+    height: 13vh;
 }
 
 .main {

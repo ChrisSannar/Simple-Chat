@@ -21,13 +21,14 @@
             v-show="viewGoButton">
             GO
         </button>
-        <div ref="loading" v-show="!viewGoButton">
-          <div class="spinner-ball"></div>
-          <p>You will now be paired with a random chatter</p>
+        <div v-show="!viewGoButton">
+          <div class="loader"></div>
+          <p>You are now being paired with a random chatter</p>
         </div>
     </div>
 </template>
 <script>
+import { setInterval } from 'timers';
 export default {
     data() {
         return {
@@ -71,8 +72,7 @@ export default {
             }
         },
         runLoadingSpinner: function() {
-          // console.log(this.$refs['spinner-ball']);
-          // console.log(this.$refs['loading']);
+          
         }
     }
 }
@@ -149,33 +149,19 @@ textarea:focus, input:focus{
   background: #44d493;
 }
 
-.spinner-ball {
-  margin: 0.2em;
-  margin-top: 1.5em;
-  size: 2em;
-  background: gray;
-  width: 15px;
-  height: 15px;
-  border-radius: 15px;
-  display: inline-block;
-  animation-duration: 1.5s;
-  transition: 0.2s;
-  animation-name: loading-bounce;
-  animation-iteration-count: infinite;
+.loader {
+  margin: 1em auto;
+  border: 8px solid #f3f3f3; 
+  border-top: 8px solid #44d493;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
 }
 
-@keyframes loading-bounce {
-  from {
-    margin-right: 1.5em;
-  }
-
-  50% {
-    margin-right: -1.5em;
-  }
-
-  to {
-    margin-right: 1.5em;
-  }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 </style>

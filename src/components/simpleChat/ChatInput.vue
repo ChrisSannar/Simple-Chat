@@ -109,15 +109,22 @@ export default {
     }
     .simpleInput {
         transition: 0.2s;
-        width: 500px;
+        width: 100%;
         font-size: 20px;
         padding: 10px;
         border: solid #cccccc;
         border-radius: 10px;
+        text-align: left;
+        bottom: 2em;;
+    }
+    .invalidWords {
+        position: fixed;
+        bottom: 0;
     }
     .chatInputWrap {
         /* width: 500px; */
-        margin: auto;
+        width: 100%;
+        
     }
     .badInput {
         border: solid #a00;
