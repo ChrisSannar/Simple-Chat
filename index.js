@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 app.get('/connect', (req, res) => {
     setTimeout(function() {
         res.send(true);
-    }, 2000)
+    }, 5000);
 });
 
 // app.post('/email', function(req, res) {

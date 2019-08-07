@@ -20,7 +20,7 @@ export default {
         return {
             text: "",
             username: "",
-            displayMain: false
+            displayMain: false,
         }
     },
     created() {
@@ -62,11 +62,11 @@ export default {
 }
 
 .chatBody {
-    height: 87vh;
+    height: 85vh;
 }
 
 .chatInput {
-    height: 13vh;
+    height: 15vh;
 }
 
 .main {

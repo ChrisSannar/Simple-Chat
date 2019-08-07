@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <h1>testing</h1>
     <Start @startChat="startChat" v-if="!chatting"/>
     <SimpleChat v-if="chatting" :name="username" />
   </div>
@@ -18,9 +17,9 @@ export default {
   },
   data() {
     return {
-      chatting: true,
+      chatting: false,  // *** Allows change between "Start" and "SimpleChat" for testing
       username: "",
-      // test: ["a", "b", "c"]
+      // test: ["a", "b", "c", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p"]
     }
   },
   methods: {

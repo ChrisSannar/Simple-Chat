@@ -1,7 +1,10 @@
 <template>
-    <div class="chatBodyWrap">
-        <div v-for="message in totalMsg" :class="message.class" :key="message.id">
-            <div>{{message.text}}</div>
+    <div ref="box" class="boxWrap">
+        <div class="chatBodyWrap">
+            <div v-for="message in totalMsg" :class="message.class" :key="message.id">
+                <div>{{message.text}}</div>
+                <p>{{message.user}}</p>
+            </div>
         </div>
     </div>
 </template>
@@ -13,8 +16,11 @@ export default {
     data() {
         return {
             totalMsg: [],
-            test: ""
         };
+    },
+    updated() {
+        var container = this.$refs.box;
+        container.scrollTop = container.scrollHeight;
     },
     methods: {
         clearMessage: function() {
@@ -24,11 +30,11 @@ export default {
     watch: {
         msg: function(newVal) {
             if (newVal){
-                let newMsg = {text: newVal, class: "localMsg", id: id++};
+                let newMsg = {text: newVal, class: "localMsg msg", user: "dude", id: id++};
                 this.totalMsg.push(newMsg);
 
                 // *** testing
-                let newMsg2 = {text: newVal, class: "foreignMsg", id: id++};
+                let newMsg2 = {text: newVal, class: "foreignMsg msg", user: "foreign", id: id++};
                 this.totalMsg.push(newMsg2);
                 // ***
 
@@ -40,35 +46,48 @@ export default {
 </script>
 
 <style>
-    .chatBodyWrap {
-        width: 105%;
-        margin: 10px 0px;
-        overflow: auto;
+    .boxWrap {
+        flex: 1;
         display: flex;
+        overflow: auto;
+        width: 105%;
+    }
+    .chatBodyWrap {
+        width: 100%;
+        margin: 10px 0px;
+        overflow-y: scroll;
+        display: flex;
+        min-height: min-content;
         flex-direction: column;
         justify-content: flex-end;
     }
+    .msg {
+        padding: 0.25em;
+        font-family: system-ui;
+    }
+    .msg > div {
+        display: inline-block;
+        padding: 0.25em 0.6em;
+        font-size: 20px;
+        border-radius: 5px;
+    }
+    .msg > p {
+        margin: 0;
+        font-size: 10px;
+        color: #333333;
+    }
     .localMsg {
         text-align: left;
-        padding: 0.25em;
     }
     .localMsg > div {
         background: #42b883;
         color: white;
-        padding: 0.25em 0.6em;
-        font-size: 20px;
-        border-radius: 5px;
-        display: inline-block;
     }
     .foreignMsg {
         text-align: right;
-        padding: 0.25em;
     }
     .foreignMsg > div {
         background: #e3e3e3;
-        padding: 0.25em 0.6em;
-        font-size: 20px;
-        border-radius: 5px;
-        display: inline-block;
+        color: #333333;
     }
 </style>
