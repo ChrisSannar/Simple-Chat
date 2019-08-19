@@ -1,63 +1,84 @@
 // server.js
 
-var express = require('express');
-var serveStatic = require('serve-static');
-var bodyParser = require('body-parser');
+var express = require('express');           // Express server
+var serveStatic = require('serve-static');  // Used to get static files
+var bodyParser = require('body-parser');    // Used to parse requests
 var ip = require('ip');
-// var nodemailer = require('nodemailer');
-
-// let transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//         user: 'chris.sannar.dev@gmail.com',
-//         pass: 'Ste1nway!'
-//     }
-// });
+var socket = require('socket.io');
 
 var app = express();
-app.use(serveStatic(__dirname + "/dist"));
+app.use(serveStatic(__dirname + '/dist'));
 app.use(bodyParser.json());
 
-var addr = process.env.IP || ip.address() || "localhost";
+var addr = process.env.IP || ip.address() || 'localhost';
 var port = process.env.PORT || 8080;
-app.listen(port);
+var server = app.listen(port);
+
+// Get socket.io in on the party
+var io = socket(server);
+var connections = {};
 
 app.get('/', (req, res) => {
     res.sendFile('index.html');
 });
 
-app.get('/connect', (req, res) => {
-    setTimeout(function() {
-        res.send(true);
-    }, 5000);
+app.get('/connect/:socketId', (req, res) => {
+  // *** Check to see if username isn't already 
+
+  let socketId = req.params.socketId;
+  console.log("GET", socketId);
+
+  setTimeout(function() {
+    res.send(true);
+  }, 2000);
 });
 
-// app.post('/email', function(req, res) {
-//     try {
-//         const mailOptions = {
-//             from: req.body.email,
-//             to: 'chris.sannar.dev@gmail.com',
-//             subject: 'Chrissannar.com Contact Request',
-//             text: `Recruiter Message
+io.on('connection', function(socket) {
+  console.log("Connected", socket.id);
+  socket.emit('init', socket.id);   // When we first start, make sure the frontend has its ID
+  connections[socket.id] = {};      // Getting the data structure of socket id's
 
-// From: ${ req.body.name }
-// Email: ${ req.body.email }
+  socket.on("test", function(data) {
+    console.log("Test recieved", data);
+    socket.emit('temp', "tested");
+  });
 
-// ${ req.body.message || ""}
-//             `
-//         }
+  socket.on('connect', function(data) {
+    console.log('connect', data);
+    connections[socket.id] = data;
+  });
 
-//         transporter.sendMail(mailOptions)
-//             .then(function() {
-//                 console.log('Message Sent');
-//                 res.send('DONE');
-//             });
+  socket.on("disconnect", function() {
+    delete connections[socket.id];
+    console.log("Socket Disconnected");
+  });
+});
 
-//         // res.send('DONE');
+// Shutdown the server and cut all current functions
+function gracefulShutdown() {
+    console.log();
+    console.log('Starting Shutdown ...');
 
-//     } catch (e) {
-//         res.send(e);
-//     }
-// })
+    // Close all chat boxes to the server
+    Object.keys(io.sockets.sockets).forEach(function(s) { 
+      io.sockets.sockets[s].disconnect(true);
+    });
+
+    // Once the server closes, exit
+    server.close(function() {
+      console.log('Shutdown complete');
+      process.exit(0);
+    });
+  }
+
+// Make sure to kill the proper processes when we're closing down
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
 
 console.log('Server started on ' + addr + ':' + port);
+
+// *** TESTING
+app.get('/test', (req, res) => {
+  res.json(connections);
+});
+// ***

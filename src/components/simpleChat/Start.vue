@@ -1,152 +1,168 @@
 <template>
     <div class="wrap">
-        <h1>Thing Explainer Chat</h1>
-        <h3>Chatting, but with Simpler Words</h3>
-        <br/>
-        <p>Enter your (simple) username</p>
-        <div class="username-input">
-          <span class="input-append">@</span>
-          <input 
-              class="simpleInput" 
-              type="text" 
-              maxlength="42"
-              v-model="username"
-              @keydown="checkSimpleInput"
-              :disabled="disableInput" />
-          </div>
-        <button 
-            class="goBtn" 
-            @click="checkUsername"
-            :disabled="disableInput"
-            v-show="viewGoButton">
-            GO
-        </button>
-        <div v-show="!viewGoButton">
-          <div class="loader"></div>
-          <p>You are now being paired with a random chatter</p>
+      <h1>Thing Explainer Chat</h1>
+      <h3>Chatting, but with Simpler Words</h3>
+      <br/>
+      <p>Enter your (simple) username</p>
+      <div class="username-input">
+        <span class="input-append">@</span>
+        <input 
+          class="simpleInput" 
+          type="text" 
+          maxlength="42"
+          v-model="username"
+          @keydown="checkSimpleInput"
+          :disabled="disableInput" />
         </div>
-        <p>{{ errorMessage }}</p>
+      <button 
+        class="goBtn" 
+        @click="checkUsername"
+        :disabled="disableInput"
+        v-show="viewGoButton">
+        GO
+      </button>
+      <div v-show="!viewGoButton">
+        <div class="loader"></div>
+        <p>You are now being paired with a random chatter</p>
+      </div>
+      <p>{{ errorMessage }}</p>
     </div>
 </template>
 <script>
 
 export default {
-    data() {
-        return {
-            disableInput: false,  // Used the disable the input when starting
-            viewGoButton: true,   // Controls the view of the 'Go' button
-            username: "",
-            errorMessage: "",
-            // Bad words...
-            badWordList: ["ass", "damn", "shit", "fuck", "bastard", "cunt", "hell", "bitch"],
+  name: 'Start',
+  props: ['socketId'],
+  data() {
+    return {
+      disableInput: false,  // Used the disable the input when starting
+      viewGoButton: true,   // Controls the view of the 'Go' button
+      username: "",
+      errorMessage: "",
+      // socketId: this.socketId,
+      // Bad words...
+      badWordList: ["ass", "damn", "shit", "fuck", "bastard", "cunt", "hell", "bitch"],
+    }
+  },
+  created() {
+
+		// this.adjustEditorWindow();
+		// window.onresize = this.adjustEditorWindow;
+
+	},
+  watch: {
+    socketId: function(val) {
+			this.socketId = val;
+		}
+  },
+  methods: {
+
+    // Checks to see if the input is ready to move on to the next stage
+    checkSimpleInput: function(e) {
+    
+      if (e.key === "Enter") {
+        this.checkUsername();
+      }
+
+      // Make sure that the input is alpha numeric with only dashes and underscores
+      let regex = /[A-Za-z0-9_-]/g;
+      if (!regex.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+
+    checkBadWord: function(wurd) {
+      let word = wurd.toLowerCase();
+      for (let badWord in this.badWordList) {
+        if (word.indexOf(this.badWordList[badWord]) >= 0) {
+          return true;
+        }
+      }
+      return false;
+    },
+
+    // Makes sure the username is not a copy and is valid to start the app
+    checkUsername: function(e) {
+      if (this.username) {
+
+        if (this.checkBadWord(this.username)) {
+          this.setErrorMessage("Please, have some class.");
+          return;
+        }
+
+        this.disableInput = true;
+        this.viewGoButton = false;
+
+        // this.runLoadingSpinner();
+        console.log("START checkUsername", this.socketId);
+
+        // Send a connection request to the server
+        this.$axios.get(`http://localhost:8080/connect/${this.socketId}`)
+          .then(() => {
+            this.viewGoButton = true;
+            this.disableInput = false;
+
+            // Starts the application if the username is good
+            this.$emit("startChat", this.username);
+          })
+          .catch(() => {
+
+            // if there is an error with the program then post the error message and restart
+            this.viewGoButton = this.disableInput = true;
+            this.setErrorMessage("There was a problem trying to connect. Please try again later.");
+          })
+        } else {
+            e.target.blur();
         }
     },
-    methods: {
 
-        // Checks to see if the input is ready to move on to the next stage
-        checkSimpleInput: function(e) {
-        
-          if (e.key === "Enter") {
-              this.checkUsername();
-          }
-
-          // Make sure that the input is alpha numeric with only dashes and underscores
-          let regex = /[A-Za-z0-9_-]/g;
-          if (!regex.test(e.key)) {
-              e.preventDefault();
-          }
-        },
-
-        checkBadWord: function(wurd) {
-          let word = wurd.toLowerCase();
-          for (let badWord in this.badWordList) {
-            if (word.indexOf(this.badWordList[badWord]) >= 0) {
-              return true;
-            }
-          }
-          return false;
-        },
-
-        // Makes sure the username is not a copy and is valid to start the app
-        checkUsername: function(e) {
-          if (this.username) {
-
-            if (this.checkBadWord(this.username)) {
-              this.setErrorMessage("Please, have some class.");
-              return;
-            }
-
-            this.disableInput = true;
-            this.viewGoButton = false;
-
-            this.runLoadingSpinner();
-
-            // Send a connection request to the server
-            this.$axios.get('http://localhost:8080/connect')
-              .then(() => {
-                this.viewGoButton = true;
-                this.disableInput = false;
-
-                // *** Check to see if username isn't already 
-
-                // Starts the application if the username is good
-                this.$emit("startChat", this.username);
-              })
-              .catch(() => {
-
-                // if there is an error with the program then post the error message and restart
-                this.viewGoButton = this.disableInput = true;
-                this.setErrorMessage("There was a problem trying to connect. Please try again later.");
-              })
-            } else {
-                e.target.blur();
-            }
-        },
-
-        setErrorMessage: function(msg) {
-          this.errorMessage = msg;
-          setTimeout(() => {
-            this.disableInput = false;
-            this.errorMessage = "";
-          }, 4000);
-        }
+    setErrorMessage: function(msg) {
+      this.errorMessage = msg;
+      setTimeout(() => {
+        this.disableInput = false;
+        this.errorMessage = "";
+      }, 4000);
     }
+  },
+  sockets: {
+
+  }
 }
 </script>
 <style>
 
 .wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 12%;
 }
 
 textarea input {
-    border:none;
-    background-image:none;
-    background-color:transparent;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    resize: none;
+  border:none;
+  background-image:none;
+  background-color:transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  resize: none;
 }
 
 textarea:focus, input:focus{
-    outline: none;
+  outline: none;
 }
 
 .simpleInput {
-    text-align: center;
-    transition: 0.2s;
-    width: 400px;
-    font-size: 20px;
-    padding: 10px;
-    border: solid #cccccc;
-    border-radius: 10px;
-    /* border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px; */
+  text-align: center;
+  transition: 0.2s;
+  width: 400px;
+  font-size: 20px;
+  padding: 10px;
+  border: solid #cccccc;
+  border-radius: 10px;
+  /* border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px; */
 }
 
 .username-input {
@@ -165,15 +181,15 @@ textarea:focus, input:focus{
 }
 
 .goBtn {
-    color: white;
-    background: #42b883;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-top: 1em;
-    font-size: 1.3em;
-    width: 4em;
-    height: 1.5em;
+  color: white;
+  background: #42b883;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 1em;
+  font-size: 1.3em;
+  width: 4em;
+  height: 1.5em;
 }
 
 .goBtn:active,

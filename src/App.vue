@@ -1,7 +1,13 @@
 <template>
   <div id="app">
-    <Start @startChat="startChat" v-if="!chatting"/>
-    <SimpleChat v-if="chatting" :name="username" />
+    <Start 
+      v-if="!chatting" 
+      @startChat="startChat" 
+      :socketId="socketId"/>
+    <SimpleChat 
+      v-if="chatting" 
+      :name="username"
+      :socketId="socketId" />
   </div>
 </template>
 
@@ -10,7 +16,7 @@ import Start from './components/simpleChat/Start.vue';
 import SimpleChat from './components/simpleChat/SimpleChat.vue';
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     Start,
     SimpleChat
@@ -19,13 +25,34 @@ export default {
     return {
       chatting: false,  // *** Allows change between "Start" and "SimpleChat" for testing
       username: "",
+      socketId: null,
+      connected: false
       // test: ["a", "b", "c", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p"]
     }
   },
   methods: {
     startChat: function(val) {
+      console.log("APP startChat", this.socketId);
       this.username = val;
       this.chatting = true;
+    },
+    setSocketId(data) {
+      this.socketId = data;
+    }
+  },
+  sockets: {
+    connect(data) {
+      this.connected = true;
+    },
+    disconnect() {
+      this.connected = false;
+    },
+
+    // When the socket channel is established, get the ID tied to the particular channel
+    init(data) {
+      // this.setSocketId(data);
+      this.socketId = data;
+      console.log("init", this.socketId);
     }
   }
 }
