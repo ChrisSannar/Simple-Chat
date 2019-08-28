@@ -93,14 +93,13 @@ export default {
         this.disableInput = true;
         this.viewGoButton = false;
 
-        // this.runLoadingSpinner();
-        console.log("START checkUsername", this.socketId);
-
         // Send a connection request to the server
         this.$axios.get(`http://localhost:8080/connect/${this.socketId}`)
-          .then(() => {
+          .then((val) => {
             this.viewGoButton = true;
             this.disableInput = false;
+
+            console.log("TEST:", val);
 
             // Starts the application if the username is good
             this.$emit("startChat", this.username);

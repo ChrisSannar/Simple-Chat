@@ -51,7 +51,6 @@ export default {
 			// document.querySelector(".messages").style.height = (window.innerHeight - 18) + "px";
 		},
 		addMessageToBody(event) {
-			this.$socket.emit("test", event);	// ***
 			this.text = event;
 		},
 		clearMessageToBody() {

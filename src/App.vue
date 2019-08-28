@@ -32,12 +32,8 @@ export default {
   },
   methods: {
     startChat: function(val) {
-      console.log("APP startChat", this.socketId);
       this.username = val;
       this.chatting = true;
-    },
-    setSocketId(data) {
-      this.socketId = data;
     }
   },
   sockets: {
@@ -50,9 +46,7 @@ export default {
 
     // When the socket channel is established, get the ID tied to the particular channel
     init(data) {
-      // this.setSocketId(data);
       this.socketId = data;
-      console.log("init", this.socketId);
     }
   }
 }

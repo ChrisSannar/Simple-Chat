@@ -17,20 +17,32 @@ var server = app.listen(port);
 // Get socket.io in on the party
 var io = socket(server);
 var connections = {};
+var readySockets = [];
 
 app.get('/', (req, res) => {
     res.sendFile('index.html');
 });
 
-app.get('/connect/:socketId', (req, res) => {
+// returns a socket Id for a currently open socket.
+function findOpenConnection(socketId) {
+  return new Promise(function(res, rej) {
+
+    for (let i = 0; i < 1000000000; i++) {
+      // do nothing/testing
+    }
+    res("TESTED");
+    
+  });
+}
+
+app.get('/connect/:socketId', async function (req, res) {
   // *** Check to see if username isn't already 
 
   let socketId = req.params.socketId;
-  console.log("GET", socketId);
 
-  setTimeout(function() {
-    res.send(true);
-  }, 2000);
+  let connectedSocketId = await findOpenConnection(socketId);
+
+  res.send(connectedSocketId);
 });
 
 io.on('connection', function(socket) {
