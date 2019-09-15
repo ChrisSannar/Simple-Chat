@@ -1,0 +1,17 @@
+What are you doing right now?
+  You are getting the matching to happen by using socket.io
+
+Things to do:
+ √ Implement the matching feature
+  √ find an efficient system to wait for a newcomer (probably a queue)
+  √ if the queue isn't empty, resolve immediately. Otherwise wait till a new user enters
+ - Send messages back and forth
+ - Have the messages read back scrollable
+ - What do you do if there is a disconnect?
+  * If it's the server, then send a reconnect message with the socket id you got
+ - Build a proper input box
+  * Give it good functionality as to word suggestions. Further more, use machine learning to find good alternatives.
+ - Improve UI/UX design (perpetual)
+ - Use statistic to find the best interval time for the "check if someone else is there"
+ - When a chatter is typing, have the '...' thing appear
+ - Have a cancel button for waiting to pair

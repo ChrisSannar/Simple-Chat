@@ -3,11 +3,14 @@
     <Start 
       v-if="!chatting" 
       @startChat="startChat" 
-      :socketId="socketId"/>
+      :socketId="socketId"
+      :pairSocketId="pairSocketId"/>
     <SimpleChat 
       v-if="chatting" 
       :name="username"
-      :socketId="socketId" />
+      :foreignName="pairUsername"
+      :socketId="socketId" 
+      :foreignSocketId="pairSocketId"/>
   </div>
 </template>
 
@@ -23,16 +26,27 @@ export default {
   },
   data() {
     return {
-      chatting: false,  // *** Allows change between "Start" and "SimpleChat" for testing
-      username: "",
+      chatting: false,    // *** Allows change between "Start" and "SimpleChat" for testing
+      username: "",       // The local and foreign names and socket ids respectively
+      pairUsername: "",
       socketId: null,
+      pairSocketId: null,
       connected: false
       // test: ["a", "b", "c", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p"]
     }
   },
   methods: {
     startChat: function(val) {
-      this.username = val;
+
+      // Set all the new info
+      this.username = val[0];
+      this.pairUsername = val[2];
+      this.pairSocketId = val[1];
+
+      console.log(`user: ${this.username} : ${this.socketId}`);
+      console.log(`pair: ${this.pairUsername} : ${this.pairSocketId}`);
+
+      // Then swap to the new chatting screen
       this.chatting = true;
     }
   },

@@ -12,7 +12,7 @@ import ChatBody from './ChatBody.vue';
 
 export default {
 	name: 'SimpleChat',
-	props: ['name', 'socketId'],
+	props: ['name', 'foreignName', 'socketId', 'foreignSocketId'],
 	components: {
 		ChatInput,
 		ChatBody

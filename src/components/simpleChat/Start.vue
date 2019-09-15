@@ -32,7 +32,7 @@
 
 export default {
   name: 'Start',
-  props: ['socketId'],
+  props: ['socketId', 'pairSocketId'],
   data() {
     return {
       disableInput: false,  // Used the disable the input when starting
@@ -53,7 +53,10 @@ export default {
   watch: {
     socketId: function(val) {
 			this.socketId = val;
-		}
+    },
+    pairSocketId: function(val) {
+      this.pairSocketId = val;
+    }
   },
   methods: {
 
@@ -94,22 +97,8 @@ export default {
         this.viewGoButton = false;
 
         // Send a connection request to the server
-        this.$axios.get(`http://localhost:8080/connect/${this.socketId}`)
-          .then((val) => {
-            this.viewGoButton = true;
-            this.disableInput = false;
+        this.$socket.emit('getChatPartner', this.username);
 
-            console.log("TEST:", val);
-
-            // Starts the application if the username is good
-            this.$emit("startChat", this.username);
-          })
-          .catch(() => {
-
-            // if there is an error with the program then post the error message and restart
-            this.viewGoButton = this.disableInput = true;
-            this.setErrorMessage("There was a problem trying to connect. Please try again later.");
-          })
         } else {
             e.target.blur();
         }
@@ -124,7 +113,17 @@ export default {
     }
   },
   sockets: {
+    chatterFound: function(info) {
+      this.viewGoButton = true;
+      this.disableInput = false;
 
+      console.log("VUE TEST:", info);
+
+      this.pairSocketId = info[0];
+
+      // Starts the application if the username is good
+      this.$emit("startChat", [this.username, info[0], info[1]]);
+    }
   }
 }
 </script>
