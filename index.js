@@ -31,7 +31,7 @@ let matching = false;
 
 async function matchSockets() {
   if (socketQueue.length < 2) {
-    throw "Short Socket Queue error";
+    throw 'Short Socket Queue error';
   } else {
 
     // Get the first two sockets in the queue
@@ -42,17 +42,17 @@ async function matchSockets() {
     socketQueue.shift();
     socketQueue.shift();
 
-    console.log("sockers2", socketQueue.map(sock => sock.id));
+    // console.log("sockers2", socketQueue.map(sock => sock.id));
 
     // Emit to each of them we found a chatter and send the respecive ID to them
-    socket1.emit("chatterFound", [socket2.id, connections[socket2.id].username]);
-    socket2.emit("chatterFound", [socket1.id, connections[socket1.id].username]);
+    socket1.emit('chatterFound', [socket2.id, connections[socket2.id].username]);
+    socket2.emit('chatterFound', [socket1.id, connections[socket1.id].username]);
 
     // Set the 'connection' status and info
     connections[socket1.id].pair = socket2.id;
     connections[socket2.id].pair = socket1.id;
 
-    console.log("sockers", Object.keys(connections).map(key => `${key} -> ${connections[key].pair}`));
+    // console.log("sockers", Object.keys(connections).map(key => `${key} -> ${connections[key].pair}`));
 
     // Let other things get paired
     matching = false;
@@ -61,7 +61,7 @@ async function matchSockets() {
 }
 
 io.on('connection', function(socket) {
-  console.log("Connected", socket.id);
+  // console.log('Connected', socket.id);
   socket.emit('init', socket.id);   // When we first start, make sure the frontend has its ID
 
   // Getting the data structure of socket id's
@@ -71,7 +71,6 @@ io.on('connection', function(socket) {
   };
 
   socket.on('connect', function(data) {
-    console.log('connect', data);
     connections[socket.id] = data;
     socketQueue.push(socket.id);
   });
@@ -79,7 +78,6 @@ io.on('connection', function(socket) {
   socket.on('disconnect', function() {
     delete connections[socket.id];
     socketQueue.filter(sock => sock.id != socket.id);
-    console.log("Socket Disconnected");
   });
 
   socket.on('getChatPartner', async function(username) {
@@ -100,6 +98,12 @@ io.on('connection', function(socket) {
     // If we're pairing, this process is already being done on this end.
     // *** Emit an error if it takes too long to pair
   });
+
+  // Simply forwards the message to the correct recipient
+  socket.on('newMessage', function(msg) {
+    connections[connections[socket.id].pair].socket.emit('newMessage', msg);
+  });
+
 });
 
 // Shutdown the server and cut all current functions

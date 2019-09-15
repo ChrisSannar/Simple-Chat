@@ -87,7 +87,9 @@ export default {
         },
         // Send the text to the chat body.
         submitText: function(text) {
-            this.$emit('submitMessage', text);
+            if (text) {
+                this.$emit('submitMessage', text);
+            }
         }
         
     }

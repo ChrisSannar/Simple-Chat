@@ -29,14 +29,16 @@ export default {
     },
     watch: {
         msg: function(newVal) {
-            if (newVal){
-                let newMsg = {text: newVal, class: "localMsg msg", user: "dude", id: id++};
-                this.totalMsg.push(newMsg);
+            if (newVal) {
 
-                // *** testing
-                let newMsg2 = {text: newVal, class: "foreignMsg msg", user: "foreign", id: id++};
-                this.totalMsg.push(newMsg2);
-                // ***
+                // The new message to be added to the body given the properties of the 'newVal'
+                let newMsg = {
+                    text: newVal.msg.getMsg(), 
+                    class: `${ newVal.local ? 'localMsg' : 'foreignMsg' } msg`, 
+                    user: newVal.msg.getSender(), 
+                    id: id++
+                };
+                this.totalMsg.push(newMsg);
 
                 this.clearMessage();
             }

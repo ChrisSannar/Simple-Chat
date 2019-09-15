@@ -18,12 +18,19 @@
 import Start from './components/simpleChat/Start.vue';
 import SimpleChat from './components/simpleChat/SimpleChat.vue';
 
+import SimpleChatMessage from './SimpleChatMessage.js';
+
 export default {
   name: 'App',
   components: {
     Start,
     SimpleChat
   },
+  // ***
+  created() {
+
+  },
+  // ***
   data() {
     return {
       chatting: false,    // *** Allows change between "Start" and "SimpleChat" for testing
@@ -42,9 +49,6 @@ export default {
       this.username = val[0];
       this.pairUsername = val[2];
       this.pairSocketId = val[1];
-
-      console.log(`user: ${this.username} : ${this.socketId}`);
-      console.log(`pair: ${this.pairUsername} : ${this.pairSocketId}`);
 
       // Then swap to the new chatting screen
       this.chatting = true;
