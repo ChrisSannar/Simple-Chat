@@ -37,11 +37,11 @@ export default {
     return {
       disableInput: false,  // Used the disable the input when starting
       viewGoButton: true,   // Controls the view of the 'Go' button
-      username: "",
-      errorMessage: "",
+      username: '',
+      errorMessage: '',
       // socketId: this.socketId,
       // Bad words...
-      badWordList: ["ass", "damn", "shit", "fuck", "bastard", "cunt", "hell", "bitch"],
+      badWordList: ['ass', 'damn', 'shit', 'fuck', 'bastard', 'cunt', 'hell', 'bitch'],
     }
   },
   created() {
@@ -63,7 +63,7 @@ export default {
     // Checks to see if the input is ready to move on to the next stage
     checkSimpleInput: function(e) {
     
-      if (e.key === "Enter") {
+      if (e.key === 'Enter') {
         this.checkUsername();
       }
 
@@ -89,7 +89,7 @@ export default {
       if (this.username) {
 
         if (this.checkBadWord(this.username)) {
-          this.setErrorMessage("Please, have some class.");
+          this.setErrorMessage('Please, have some class.');
           return;
         }
 
@@ -108,21 +108,20 @@ export default {
       this.errorMessage = msg;
       setTimeout(() => {
         this.disableInput = false;
-        this.errorMessage = "";
+        this.errorMessage = '';
       }, 4000);
     }
+
   },
   sockets: {
     chatterFound: function(info) {
       this.viewGoButton = true;
       this.disableInput = false;
 
-      console.log("VUE TEST:", info);
-
       this.pairSocketId = info[0];
 
       // Starts the application if the username is good
-      this.$emit("startChat", [this.username, info[0], info[1]]);
+      this.$emit('startChat', [this.username, info[0], info[1]]);
     }
   }
 }

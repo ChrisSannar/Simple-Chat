@@ -76,12 +76,19 @@ io.on('connection', function(socket) {
   });
 
   socket.on('disconnect', function() {
+    // *** First make sure that we have the matching socket taken care of
+    // console.log('DIS', socket.id);
+    if (connections[connections[socket.id].pair]){
+      connections[connections[socket.id].pair].socket.emit('left')
+    }
+
+    // Once done, remove the connection from our connections bar and from the socket queue
     delete connections[socket.id];
     socketQueue.filter(sock => sock.id != socket.id);
   });
 
   socket.on('getChatPartner', async function(username) {
-    connections[socket.id].username = username;
+    connections[socket.id].username = username; // Add the new info to the connection
     socketQueue.push(socket);
 
     // Make sure we don't try to match unless we already have one...

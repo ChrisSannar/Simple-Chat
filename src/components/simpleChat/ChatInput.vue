@@ -87,8 +87,14 @@ export default {
         },
         // Send the text to the chat body.
         submitText: function(text) {
-            if (text) {
+            if (text && text.length > 0) {
                 this.$emit('submitMessage', text);
+            } else {
+                let box = document.querySelector(".simpleInput");
+                box.classList.add("badInput");
+                setTimeout(() => {
+                    box.classList.remove("badInput");
+                }, 400);
             }
         }
         

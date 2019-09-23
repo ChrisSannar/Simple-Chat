@@ -1,12 +1,14 @@
 <template>
   <div id="app">
     <Start 
+      ref="start"
       v-if="!chatting" 
       @startChat="startChat" 
       :socketId="socketId"
       :pairSocketId="pairSocketId"/>
     <SimpleChat 
       v-if="chatting" 
+      @left="chatterLeft"
       :name="username"
       :foreignName="pairUsername"
       :socketId="socketId" 
@@ -38,7 +40,8 @@ export default {
       pairUsername: "",
       socketId: null,
       pairSocketId: null,
-      connected: false
+      connected: false,
+      temp: null
       // test: ["a", "b", "c", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p"]
     }
   },
@@ -52,9 +55,15 @@ export default {
 
       // Then swap to the new chatting screen
       this.chatting = true;
+    },
+
+    chatterLeft: function() {
+      this.chatting = false;
     }
+
   },
   sockets: {
+
     connect(data) {
       this.connected = true;
     },
