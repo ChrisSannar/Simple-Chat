@@ -6,11 +6,14 @@ Things to do:
   √ find an efficient system to wait for a newcomer (probably a queue)
   √ if the queue isn't empty, resolve immediately. Otherwise wait till a new user enters
  √ Send messages back and forth
-  * Get rid of blank messages
- - What do you do if there is a disconnect?
-  * If the socket doesn't reconnect before a timeout, send the kill message to the pairing socket
-  * If it's the server, then send a reconnect message with the socket id you got
+  √ Get rid of blank messages
  - Have the messages read back scrollable
+ √ Fix fonts
+ - Fix username check regex to be more specific ('hello' not accepted because it has 'hell')
+
+ - What do you do if there is a disconnect?
+  √ If the socket doesn't reconnect before a timeout, send the kill message to the pairing socket
+  * If it's the server, then send a reconnect message with the socket id you got
  - Have a cancel button for waiting to pair
  - Build a proper input box
   * Give it good functionality as to word suggestions. Further more, use machine learning to find good alternatives.

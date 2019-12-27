@@ -134,6 +134,7 @@ export default {
   align-items: center;
   flex-direction: column;
   margin-top: 12%;
+  font-family: system-ui;
 }
 
 textarea input {

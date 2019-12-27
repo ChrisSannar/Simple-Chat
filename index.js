@@ -61,7 +61,7 @@ async function matchSockets() {
 }
 
 io.on('connection', function(socket) {
-  // console.log('Connected', socket.id);
+  console.log('Connected', socket.id);
   socket.emit('init', socket.id);   // When we first start, make sure the frontend has its ID
 
   // Getting the data structure of socket id's
@@ -70,14 +70,15 @@ io.on('connection', function(socket) {
     pair: null
   };
 
-  socket.on('connect', function(data) {
-    connections[socket.id] = data;
-    socketQueue.push(socket.id);
-  });
+  // socket.on('connect', function(data) {
+  //   console.log('CONNECT', socket.id);
+  //   connections[socket.id] = data;
+  //   socketQueue.push(socket.id);
+  // });
 
   socket.on('disconnect', function() {
     // *** First make sure that we have the matching socket taken care of
-    // console.log('DIS', socket.id);
+    console.log('DIS', socket.id);
     if (connections[connections[socket.id].pair]){
       connections[connections[socket.id].pair].socket.emit('left')
     }
@@ -88,6 +89,8 @@ io.on('connection', function(socket) {
   });
 
   socket.on('getChatPartner', async function(username) {
+    console.log('GET CHATTER', username);
+
     connections[socket.id].username = username; // Add the new info to the connection
     socketQueue.push(socket);
 

@@ -1,7 +1,7 @@
 <template>
 	<div class="main">
 		<div v-if="errorMessage.length == 0" class="wrap">
-			<h1>{{username}}</h1>
+			<!-- <h1>{{username}}</h1> -->
 			<ChatBody class="chatBody" :msg="msg" @clearMsg="clearMessageToBody"/>
 			<ChatInput class="chatInput" @submitMessage="sendMessage"/>
 		</div>

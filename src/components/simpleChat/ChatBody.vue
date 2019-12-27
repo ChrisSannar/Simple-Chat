@@ -2,8 +2,8 @@
     <div ref="box" class="boxWrap">
         <div class="chatBodyWrap">
             <div v-for="message in totalMsg" :class="message.class" :key="message.id">
-                <div>{{message.text}}</div>
-                <p>{{message.user}}</p>
+                <div>{{ message.text }}</div>
+                <p>{{ message.user }}</p>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@ export default {
     },
     methods: {
         clearMessage: function() {
-            this.$emit("clearMsg", "");
+            this.$emit('clearMsg', '');
         }
     },
     watch: {
@@ -35,10 +35,18 @@ export default {
                 let newMsg = {
                     text: newVal.msg.getMsg(), 
                     class: `${ newVal.local ? 'localMsg' : 'foreignMsg' } msg`, 
-                    user: newVal.msg.getSender(), 
+                    user: newVal.msg.getSender(),
+                    date: newVal.msg.getTime(), 
                     id: id++
                 };
                 this.totalMsg.push(newMsg);
+
+                // Scroll to the bottom of the feed instead of jumping around
+                // let temp = this.$el.querySelector('.chatBodyWrap');
+                // console.log('SCROLL', temp.scrollTop, temp.offsetHeight);
+                // temp.scrollTop += 60;
+                // console.log('SCROLL2', temp.scrollTop, temp.scrollHeight);
+                // console.log(temp);
 
                 this.clearMessage();
             }
@@ -61,7 +69,12 @@ export default {
         display: flex;
         min-height: min-content;
         flex-direction: column;
-        justify-content: flex-end;
+        /* This is the cause of the bug, but because javascript is broken, it doesnt't work */
+        justify-content: flex-end; 
+    }
+    /* Here's an alternative, but it comes with worse bugs of it's own, hence why it's not implemented */
+    .chatBodyWrap > :first-child{
+        /* margin-top: auto !important; */
     }
     .msg {
         padding: 0.25em;

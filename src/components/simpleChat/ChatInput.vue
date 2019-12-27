@@ -117,7 +117,7 @@ export default {
     }
     .simpleInput {
         transition: 0.2s;
-        width: 100%;
+        width: 90%;
         font-size: 20px;
         padding: 10px;
         border: solid #cccccc;
